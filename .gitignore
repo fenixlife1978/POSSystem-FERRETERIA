@@ -1,0 +1,8 @@
+node_modules/
+dist/
+release/
+*.log
+.DS_Store
+
+# Flag del build DEMO — lo genera el workflow, nunca se versiona
+pos/demo-mode.json

@@ -1,0 +1,185 @@
+/* Catálogo Maestro - Barra de búsqueda y autocompletado */
+.catalogo-search-bar {
+  background: #fff8e7;
+  border: 1px solid #e0c87a;
+  border-radius: 3px;
+  padding: 6px 8px;
+  margin: 0 0 6px 0;
+  position: relative;
+  z-index: 100;
+}
+
+.catalogo-search-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.catalogo-search-icon {
+  font-size: 14px;
+}
+
+.catalogo-search-label {
+  font-size: 11px;
+  font-weight: bold;
+  color: #0B3D91;
+}
+
+.catalogo-search-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.catalogo-search-input {
+  width: 100%;
+  padding: 5px 8px;
+  font-size: 13px;
+  border: 1px solid #7f9db9;
+  border-radius: 2px;
+  background: #fff;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.catalogo-search-input:focus {
+  border-color: #0B3D91;
+  box-shadow: 0 0 3px rgba(11, 61, 145, 0.3);
+}
+
+.catalogo-search-spinner {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ccc;
+  border-top-color: #0B3D91;
+  border-radius: 50%;
+  animation: catalogo-spin 0.6s linear infinite;
+}
+
+@keyframes catalogo-spin {
+  to { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Dropdown de resultados */
+.catalogo-dropdown {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 100%;
+  background: #fff;
+  border: 1px solid #7f9db9;
+  border-top: none;
+  max-height: 320px;
+  overflow-y: auto;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: none;
+}
+
+.catalogo-item {
+  padding: 6px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  transition: background 0.1s;
+}
+
+.catalogo-item:last-child {
+  border-bottom: none;
+}
+
+.catalogo-item:hover,
+.catalogo-item-hover {
+  background: #e8f0fe;
+}
+
+.catalogo-item-nombre {
+  font-size: 13px;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-bottom: 2px;
+}
+
+.catalogo-item-meta {
+  font-size: 11px;
+  color: #555;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 1px;
+}
+
+.catalogo-item-marca {
+  color: #0B3D91;
+  font-weight: bold;
+}
+
+.catalogo-item-codigo {
+  color: #666;
+  font-family: monospace;
+}
+
+.catalogo-item-categoria {
+  color: #888;
+}
+
+.catalogo-item-modelos {
+  font-size: 10px;
+  color: #777;
+  font-style: italic;
+}
+
+.catalogo-empty {
+  padding: 12px 10px;
+  text-align: center;
+  color: #888;
+  font-size: 12px;
+}
+
+/* ===== Ficha informativa del catálogo (overlay) ===== */
+.ficha-catalogo-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.45); z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+}
+.ficha-catalogo-modal {
+  background: #fff; border-radius: 8px; padding: 20px 24px;
+  max-width: 520px; width: 95%; max-height: 85vh; overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25); position: relative;
+}
+.ficha-catalogo-modal .ficha-cat-close {
+  position: absolute; top: 8px; right: 12px; cursor: pointer;
+  font-size: 20px; color: #666; border: none; background: none; padding: 4px 8px;
+}
+.ficha-catalogo-modal .ficha-cat-close:hover { color: #c00; }
+.ficha-cat-nombre {
+  font-size: 16px; font-weight: 700; color: #0B3D91; margin-bottom: 8px;
+  border-bottom: 2px solid #0B3D91; padding-bottom: 6px;
+}
+.ficha-cat-meta { font-size: 12px; color: #555; margin-bottom: 10px; display: flex; gap: 14px; flex-wrap: wrap; }
+.ficha-cat-meta span { font-weight: 600; }
+.ficha-cat-label { color: #888; font-weight: 400; }
+.ficha-cat-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+.ficha-cat-table th {
+  text-align: left; background: #e8f0fe; color: #0B3D91; padding: 5px 8px;
+  border: 1px solid #ccc; font-size: 11px; text-transform: uppercase;
+}
+.ficha-cat-table td {
+  padding: 5px 8px; border: 1px solid #ddd; vertical-align: top;
+}
+.ficha-cat-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.ficha-cat-tag {
+  background: #e8f0fe; color: #0B3D91; font-size: 10px; padding: 2px 8px;
+  border-radius: 10px; border: 1px solid #b6d4fe;
+}
+.ficha-cat-actions { margin-top: 14px; text-align: right; }
+.ficha-cat-actions button {
+  padding: 6px 16px; border-radius: 4px; border: 1px solid #aaa;
+  background: linear-gradient(to bottom, #f5f3ec, #d5cfbd); cursor: pointer;
+  font-weight: 600; color: #003399; font-size: 12px;
+}
+.ficha-cat-actions button:hover { background: linear-gradient(to bottom, #fff, #e8e6df); }

@@ -1,0 +1,69 @@
+name: Build EXE (Full + Demo)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      # ================= BUILD COMPLETO (licencia) =================
+      - name: Build versión completa (Setup + Portable)
+        run: npx electron-builder --win --publish never
+
+      - name: Aislar artefactos de la versión completa
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist\full | Out-Null
+          Move-Item dist\*.exe dist\full\
+          if (Test-Path dist\*.blockmap) { Move-Item dist\*.blockmap dist\full\ }
+
+      # ================= BUILD DEMO (evaluación) =================
+      - name: Activar modo DEMO (flag + nombres de artefacto)
+        shell: pwsh
+        run: |
+          Set-Content -Path pos\demo-mode.json -Value '{"demo":true}'
+          node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));p.productName='POSsystem pro DEMO';p.build.portable.artifactName='POSsystem-pro-DEMO-'+p.version+'-portable.exe';p.build.nsis.artifactName='POSsystem-pro-DEMO-Setup-'+p.version+'.exe';fs.writeFileSync('package.json',JSON.stringify(p,null,2));"
+          Get-Content package.json | Select-String "DEMO"
+
+      - name: Build versión DEMO (Setup + Portable)
+        run: npx electron-builder --win --publish never
+
+      - name: Aislar artefactos DEMO y restaurar repo
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist\demo | Out-Null
+          Move-Item dist\*.exe dist\demo\
+          if (Test-Path dist\*.blockmap) { Move-Item dist\*.blockmap dist\demo\ }
+          Remove-Item pos\demo-mode.json -Force -ErrorAction SilentlyContinue
+          git checkout -- package.json
+
+      # ================= PUBLICACIÓN DE ARTEFACTOS =================
+      - name: Upload FULL — instalador + portable
+        uses: actions/upload-artifact@v4
+        with:
+          name: POSsystem-pro-FULL
+          path: |
+            dist/full/*.exe
+            dist/full/*.blockmap
+
+      - name: Upload DEMO — instalador + portable de evaluación
+        uses: actions/upload-artifact@v4
+        with:
+          name: POSsystem-pro-DEMO
+          path: |
+            dist/demo/*.exe
+            dist/demo/*.blockmap
